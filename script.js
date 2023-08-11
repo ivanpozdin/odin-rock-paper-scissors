@@ -24,6 +24,7 @@ const isDraw = function (firstMove, secondMove) {
 };
 
 const getCapitalizedWord = function (word) {
+  if (word.length < 1) return word;
   return word.toLowerCase()[0].toUpperCase() + word.slice(1);
 };
 
@@ -36,7 +37,7 @@ const createMessageForPlayerVictory = function (
   playerSelection,
   computerSelection
 ) {
-  const message = `You won! `;
+  const message = `You Won! `;
   return (
     message +
     `${getCapitalizedWord(playerSelection)} beats ${getCapitalizedWord(
@@ -73,6 +74,47 @@ const playRound = function (playerSelection, computerSelection) {
   }
 };
 
-const playerSelection = "rock";
-const computerSelection = getComputerChoice();
-console.log(playRound(playerSelection, computerSelection));
+// const playerSelection = "rock";
+// const computerSelection = getComputerChoice();
+// console.log(playRound(playerSelection, computerSelection));
+
+const isValidMove = function (move) {
+  return moves.some((capitalMove) => capitalMove === getCapitalizedWord(move));
+};
+
+const game = function () {
+  let playerScore = 0;
+  let computerScore = 0;
+  for (let i = 0; i < 5; i++) {
+    let playerMove = "";
+    while (!isValidMove(playerMove)) {
+      playerMove = prompt(
+        "Enter your move(rock, paper or scissors): "
+      ).toLowerCase();
+    }
+    const computerMove = getComputerChoice();
+    const output = playRound(playerMove, computerMove);
+    if (output.includes("Won")) {
+      playerScore++;
+    }
+    if (output.includes("Lose")) {
+      computerScore++;
+    }
+    alert(playRound(playerMove, computerMove));
+  }
+  if (playerScore === computerScore) {
+    alert(
+      `Game over! \nScore: \nyou: ${playerScore}\ncomputer: ${computerScore}\nIt is a Draw!!!`
+    );
+  } else if (playerScore < computerScore) {
+    alert(
+      `Game over! \nScore: \nyou: ${playerScore}\ncomputer: ${computerScore}\nYou Lose!!!`
+    );
+  } else {
+    alert(
+      `Game over! \nScore: \nyou: ${playerScore}\ncomputer: ${computerScore}\nYou Won!!!`
+    );
+  }
+};
+
+game();
