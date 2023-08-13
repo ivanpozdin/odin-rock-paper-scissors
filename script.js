@@ -1,5 +1,7 @@
 "use strict";
-const moves = ["Rock", "Paper", "Scissors"];
+
+const NUMBER_OF_ROUNDS = 5;
+const validChoices = ["Rock", "Paper", "Scissors"];
 
 const winningMovesCombinations = {
   paper: "rock",
@@ -8,30 +10,40 @@ const winningMovesCombinations = {
 };
 
 const getComputerChoice = function () {
-  const moveIndex = Math.floor(Math.random() * 3);
-  return moves[moveIndex];
+  const choiceIndex = Math.floor(Math.random() * 3);
+  return validChoices[choiceIndex];
 };
 
-const didFirstMoveWinSecond = function (firstMove, secondMove) {
+const getPlayerChoice = function () {
+  let playerChoice = "";
+  while (!isValidChoice(playerChoice)) {
+    playerChoice = prompt(
+      "Enter your move(rock, paper or scissors): "
+    ).toLowerCase();
+  }
+  return playerChoice;
+};
+
+const didFirstWinSecond = function (firstChoice, secondChoice) {
   return (
-    winningMovesCombinations[firstMove.toLowerCase()] ===
-    secondMove.toLowerCase()
+    winningMovesCombinations[firstChoice.toLowerCase()] ===
+    secondChoice.toLowerCase()
   );
 };
 
-const isDraw = function (firstMove, secondMove) {
-  return firstMove.toLowerCase() === secondMove.toLowerCase();
+const isDraw = function (firstChoice, secondChoice) {
+  return firstChoice.toLowerCase() === secondChoice.toLowerCase();
 };
 
-const getCapitalizedWord = function (word) {
+const capitalize = function (word) {
   if (word.length < 1) return word;
   return word.toLowerCase()[0].toUpperCase() + word.slice(1);
 };
 
-const createMessageForDraw = function (firstMove, secondMove) {
-  return `It is a draw! ${getCapitalizedWord(
-    firstMove
-  )} doesn't beat ${getCapitalizedWord(secondMove)}`;
+const createMessageForDraw = function (firstChoice, secondChoice) {
+  return `It is a draw! ${capitalize(firstChoice)} doesn't beat ${capitalize(
+    secondChoice
+  )}`;
 };
 const createMessageForPlayerVictory = function (
   playerSelection,
@@ -40,9 +52,7 @@ const createMessageForPlayerVictory = function (
   const message = `You Won! `;
   return (
     message +
-    `${getCapitalizedWord(playerSelection)} beats ${getCapitalizedWord(
-      computerSelection
-    )}`
+    `${capitalize(playerSelection)} beats ${capitalize(computerSelection)}`
   );
 };
 const createMessageForComputerVictory = function (
@@ -52,9 +62,7 @@ const createMessageForComputerVictory = function (
   const message = `You Lose! `;
   return (
     message +
-    `${getCapitalizedWord(computerSelection)} beats ${getCapitalizedWord(
-      playerSelection
-    )}`
+    `${capitalize(computerSelection)} beats ${capitalize(playerSelection)}`
   );
 };
 
@@ -62,10 +70,7 @@ const playRound = function (playerSelection, computerSelection) {
   if (isDraw(playerSelection, computerSelection)) {
     return createMessageForDraw(playerSelection, computerSelection);
   }
-  const didPlayerWon = didFirstMoveWinSecond(
-    playerSelection,
-    computerSelection
-  );
+  const didPlayerWon = didFirstWinSecond(playerSelection, computerSelection);
 
   if (didPlayerWon) {
     return createMessageForPlayerVictory(playerSelection, computerSelection);
@@ -74,34 +79,11 @@ const playRound = function (playerSelection, computerSelection) {
   }
 };
 
-// const playerSelection = "rock";
-// const computerSelection = getComputerChoice();
-// console.log(playRound(playerSelection, computerSelection));
-
-const isValidMove = function (move) {
-  return moves.some((capitalMove) => capitalMove === getCapitalizedWord(move));
+const isValidChoice = function (choice) {
+  return validChoices.some((validChoice) => validChoice === capitalize(choice));
 };
 
-const game = function () {
-  let playerScore = 0;
-  let computerScore = 0;
-  for (let i = 0; i < 5; i++) {
-    let playerMove = "";
-    while (!isValidMove(playerMove)) {
-      playerMove = prompt(
-        "Enter your move(rock, paper or scissors): "
-      ).toLowerCase();
-    }
-    const computerMove = getComputerChoice();
-    const output = playRound(playerMove, computerMove);
-    if (output.includes("Won")) {
-      playerScore++;
-    }
-    if (output.includes("Lose")) {
-      computerScore++;
-    }
-    alert(playRound(playerMove, computerMove));
-  }
+const alertGameOver = function (playerScore, computerScore) {
   if (playerScore === computerScore) {
     alert(
       `Game over! \nScore: \nyou: ${playerScore}\ncomputer: ${computerScore}\nIt is a Draw!!!`
@@ -115,6 +97,41 @@ const game = function () {
       `Game over! \nScore: \nyou: ${playerScore}\ncomputer: ${computerScore}\nYou Won!!!`
     );
   }
+};
+
+const alertRound = function (
+  playerChoice,
+  playerScore,
+  computerChoice,
+  computerScore
+) {
+  alert(
+    `Your choice: ${capitalize(playerChoice)}\nComputer choice: ${capitalize(
+      computerChoice
+    )}\n${playRound(
+      playerChoice,
+      computerChoice
+    )}\nYou ${playerScore} : Computer ${computerScore}`
+  );
+};
+
+const game = function () {
+  let playerScore = 0;
+  let computerScore = 0;
+  for (let i = 0; i < NUMBER_OF_ROUNDS; i++) {
+    const playerChoice = getPlayerChoice();
+    const computerChoice = getComputerChoice();
+    const playerWon = didFirstWinSecond(playerChoice, computerChoice);
+    const computerWon = didFirstWinSecond(computerChoice, playerChoice);
+    if (playerWon) {
+      playerScore++;
+    }
+    if (computerWon) {
+      computerScore++;
+    }
+    alertRound(playerChoice, playerScore, computerChoice, computerScore);
+  }
+  alertGameOver(playerScore, computerScore);
 };
 
 game();
