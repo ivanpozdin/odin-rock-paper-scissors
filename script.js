@@ -134,4 +134,14 @@ const game = function () {
   alertGameOver(playerScore, computerScore);
 };
 
-game();
+const images = [...document.querySelectorAll(".player-container img")];
+images.forEach((image) => {
+  image.addEventListener("mouseenter", function (e) {
+    image.classList.add("chosen");
+  });
+  image.addEventListener("mouseleave", function (e) {
+    image.classList.remove("chosen");
+  });
+});
+
+// game();
