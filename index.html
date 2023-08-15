@@ -13,42 +13,32 @@
       <div class="player-container">
         <h2>You</h2>
         <div class="choice-btn-container">
-          <button class="rock-btn">
-            <img class="rock-img" src="./imgs/rock.jpg" alt="Rock" />
-          </button>
-          <button class="paper-btn">
-            <img class="paper-img" src="./imgs/paper.jpg" alt="Paper" />
-          </button>
-          <button class="scissors-btn">
-            <img
-              class="scissors chosen"
-              src="./imgs/scissors.jpg"
-              alt="Scissors"
-            />
-          </button>
+          <img data-choice="rock" src="./imgs/rock.jpg" alt="Rock" />
+          <img data-choice="paper" src="./imgs/paper.jpg" alt="Paper" />
+          <img
+            data-choice="scissors"
+            src="./imgs/scissors.jpg"
+            alt="Scissors"
+          />
           <div class="score-player-container">
-            <p>3</p>
+            <p>0</p>
           </div>
         </div>
       </div>
-      <div class="separator"></div>
+      <div class="separator">
+        <h2 class="game-info"></h2>
+      </div>
       <div class="computer-container">
         <div class="choice-btn-container">
-          <button class="rock-btn">
-            <img class="rock-img" src="./imgs/rock.jpg" alt="Rock" />
-          </button>
-          <button class="paper-btn">
-            <img class="paper-img" src="./imgs/paper.jpg" alt="Paper" />
-          </button>
-          <button class="scissors-btn">
-            <img
-              class="scissors chosen"
-              src="./imgs/scissors.jpg"
-              alt="Scissors"
-            />
-          </button>
+          <img
+            data-choice="scissors"
+            src="./imgs/scissors.jpg"
+            alt="Scissors"
+          />
+          <img data-choice="rock" src="./imgs/rock.jpg" alt="Rock" />
+          <img data-choice="paper" src="./imgs/paper.jpg" alt="Paper" />
           <div class="score-computer-container">
-            <p>3</p>
+            <p>0</p>
           </div>
         </div>
         <h2>Computer</h2>

@@ -1,7 +1,20 @@
 "use strict";
+const playerImages = [...document.querySelectorAll(".player-container img")];
+const computerImages = [
+  ...document.querySelectorAll(".computer-container img"),
+];
+const playerScoreElement = document.querySelector(".score-player-container p");
+const computerScoreElement = document.querySelector(
+  ".score-computer-container p"
+);
+const gameInfo = document.querySelector(".game-info");
 
 const NUMBER_OF_ROUNDS = 5;
-const validChoices = ["Rock", "Paper", "Scissors"];
+const validChoices = ["rock", "paper", "scissors"];
+
+let playerScore = 0;
+let computerScore = 0;
+let gamesNumber = 0;
 
 const winningMovesCombinations = {
   paper: "rock",
@@ -31,7 +44,7 @@ const didFirstWinSecond = function (firstChoice, secondChoice) {
   );
 };
 
-const isDraw = function (firstChoice, secondChoice) {
+const isTie = function (firstChoice, secondChoice) {
   return firstChoice.toLowerCase() === secondChoice.toLowerCase();
 };
 
@@ -40,66 +53,37 @@ const capitalize = function (word) {
   return word.toLowerCase()[0].toUpperCase() + word.slice(1);
 };
 
-const createMessageForDraw = function (firstChoice, secondChoice) {
-  return `It is a draw! ${capitalize(firstChoice)} doesn't beat ${capitalize(
-    secondChoice
-  )}`;
-};
-const createMessageForPlayerVictory = function (
-  playerSelection,
-  computerSelection
-) {
-  const message = `You Won! `;
-  return (
-    message +
-    `${capitalize(playerSelection)} beats ${capitalize(computerSelection)}`
-  );
-};
-const createMessageForComputerVictory = function (
-  playerSelection,
-  computerSelection
-) {
-  const message = `You Lose! `;
-  return (
-    message +
-    `${capitalize(computerSelection)} beats ${capitalize(playerSelection)}`
-  );
-};
-
-const playRound = function (playerSelection, computerSelection) {
-  if (isDraw(playerSelection, computerSelection)) {
-    return createMessageForDraw(playerSelection, computerSelection);
-  }
-  const didPlayerWon = didFirstWinSecond(playerSelection, computerSelection);
-
-  if (didPlayerWon) {
-    return createMessageForPlayerVictory(playerSelection, computerSelection);
+const createMessageForRound = function (playerChoice, computerChoice) {
+  if (didFirstWinSecond(playerChoice, computerChoice)) {
+    return `You won! ${capitalize(playerChoice)} beats ${capitalize(
+      computerChoice
+    )}`;
+  } else if (isTie(playerChoice, computerChoice)) {
+    return `It is a tie! ${capitalize(playerChoice)} doesn't beat ${capitalize(
+      computerChoice
+    )}`;
   } else {
-    return createMessageForComputerVictory(playerSelection, computerSelection);
+    return `You lose! ${capitalize(playerChoice)} beats ${capitalize(
+      computerChoice
+    )}`;
   }
 };
 
 const isValidChoice = function (choice) {
-  return validChoices.some((validChoice) => validChoice === capitalize(choice));
+  return validChoices.some((validChoice) => validChoice === choice);
 };
 
-const alertGameOver = function (playerScore, computerScore) {
+const renderGameOverMessage = function (playerScore, computerScore) {
   if (playerScore === computerScore) {
-    alert(
-      `Game over! \nScore: \nyou: ${playerScore}\ncomputer: ${computerScore}\nIt is a Draw!!!`
-    );
+    gameInfo.textContent = `Game over! It is a Draw!!!`;
   } else if (playerScore < computerScore) {
-    alert(
-      `Game over! \nScore: \nyou: ${playerScore}\ncomputer: ${computerScore}\nYou Lose!!!`
-    );
+    gameInfo.textContent = `Game over! You Lose!!!`;
   } else {
-    alert(
-      `Game over! \nScore: \nyou: ${playerScore}\ncomputer: ${computerScore}\nYou Won!!!`
-    );
+    gameInfo.textContent = `Game over! You Won!!!`;
   }
 };
 
-const alertRound = function (
+const renderRoundInformation = function (
   playerChoice,
   playerScore,
   computerChoice,
@@ -115,33 +99,57 @@ const alertRound = function (
   );
 };
 
-const game = function () {
-  let playerScore = 0;
-  let computerScore = 0;
-  for (let i = 0; i < NUMBER_OF_ROUNDS; i++) {
-    const playerChoice = getPlayerChoice();
-    const computerChoice = getComputerChoice();
-    const playerWon = didFirstWinSecond(playerChoice, computerChoice);
-    const computerWon = didFirstWinSecond(computerChoice, playerChoice);
-    if (playerWon) {
-      playerScore++;
-    }
-    if (computerWon) {
-      computerScore++;
-    }
-    alertRound(playerChoice, playerScore, computerChoice, computerScore);
+const updateScore = function (playerChoice, computerChoice) {
+  if (didFirstWinSecond(playerChoice, computerChoice)) {
+    playerScore++;
   }
-  alertGameOver(playerScore, computerScore);
+  if (didFirstWinSecond(computerChoice, playerChoice)) {
+    computerScore++;
+  }
+  gamesNumber++;
 };
 
-const images = [...document.querySelectorAll(".player-container img")];
-images.forEach((image) => {
-  image.addEventListener("mouseenter", function (e) {
-    image.classList.add("chosen");
-  });
-  image.addEventListener("mouseleave", function (e) {
-    image.classList.remove("chosen");
-  });
-});
+const renderScore = function () {
+  playerScoreElement.innerHTML = playerScore;
+  computerScoreElement.innerHTML = computerScore;
+};
 
-// game();
+const renderComputerChoice = function (computerChoice) {
+  const computerImgChoice = document.querySelector(
+    `.computer-container [data-choice=${computerChoice}]`
+  );
+  computerImages.forEach((image) => image.classList.remove("chosen"));
+  computerImgChoice.classList.add("chosen");
+};
+
+const reset = function () {
+  [playerScore, computerScore, gamesNumber] = [0, 0, 0];
+};
+
+const isGameOver = () => gamesNumber === NUMBER_OF_ROUNDS;
+
+const handlePlayerChoice = function (e) {
+  gameInfo.textContent = "";
+  renderScore();
+  const playerChoice = e.target.dataset.choice;
+  const computerChoice = getComputerChoice();
+  renderComputerChoice(computerChoice);
+  updateScore(playerChoice, computerChoice);
+  renderScore();
+  gameInfo.textContent = createMessageForRound(playerChoice, computerChoice);
+  const gameOver = isGameOver();
+  if (gameOver) {
+    renderGameOverMessage(playerScore, computerScore);
+    reset();
+  }
+};
+
+const changeImageBorderOnHover = function (image) {
+  image.addEventListener("mouseenter", () => image.classList.toggle("chosen"));
+  image.addEventListener("mouseleave", () => image.classList.toggle("chosen"));
+};
+
+playerImages.forEach((image) => {
+  changeImageBorderOnHover(image);
+  image.addEventListener("click", handlePlayerChoice);
+});

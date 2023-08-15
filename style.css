@@ -5,11 +5,12 @@ body {
   margin: 0;
   justify-content: flex-start;
   height: 100vh;
-  gap: 40px;
+  gap: 0px;
 }
 
 .separator {
-  height: 100px;
+  display: flex;
+  height: 200px;
   background-color: #000;
   width: 100vw;
   margin-top: 100px;
@@ -46,10 +47,11 @@ body {
   justify-content: flex-start;
   color: black;
   font-size: 600px;
-  /* border: 10px solid red; */
+  font-family: "Kanit", sans-serif;
   padding: 0;
   align-items: center;
   margin-left: 100px;
+  width: 150px;
 }
 .score-player-container p,
 .score-computer-container p {
@@ -73,29 +75,29 @@ h2 {
   margin: 0;
 }
 
-.rock-btn,
-.paper-btn,
-.scissors-btn {
-  flex-grow: 0;
-  border: none;
-  background-color: #fff;
-  margin: 0;
-  padding: 0;
-  width: 1000px;
-  height: 1000px;
-  border-radius: 10%;
-}
-
 .player-container img,
 .computer-container img {
+  flex-grow: 0;
+  margin: 0;
+  padding: 0;
   width: 1000px;
   height: 1000px;
   object-fit: cover;
   object-position: center;
   border-radius: 10%;
-  margin: 0;
+  box-sizing: border-box;
 }
 
 .chosen {
   border: 20px #0ea300 solid;
+}
+
+.game-info {
+  flex: 10vh;
+  font-size: 7rem;
+  font-family: "Kanit", sans-serif;
+  font-weight: 700;
+  color: red;
+  margin: 0;
+  text-align: center;
 }
